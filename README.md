@@ -20,7 +20,7 @@
 * **Mask-free shifted-window self-attention (MFSWA).** Each spatial window is **pre-gathered into a dense tensor**, so every attention call reduces to a single standard scaled-dot-product (SDPA) call — *no attention mask, cyclic shift, or padding ever enters the graph*. This gives a **1.62× throughput gain over its full-attention teacher** at essentially identical quality, with **no dedicated sparse kernel**.
 * **Restoration-aware Autoencoder (ReAE).** A lightweight encoder–decoder jointly fine-tuned with the DiT in pixel space removes the heavy-3D-VAE / tiled-decoding bottleneck.
 * **Causal chunk-wise streaming.** A minimal causal protocol (no rolling KV cache, no overlapped DiT inference) bounds the temporal axis, confining the residual (\mathcal{O}(N^2)) cost to the spatial axes.
-* **Kernel-agnostic & portable.** The same checkpoint runs **bit-identically** across PyTorch SDPA, FlashAttention-2/3, SageAttention, and xFormers — no retraining, weight conversion, or kernel rewrite.
+
 
 ## 📊 Results
 
