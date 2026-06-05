@@ -1,14 +1,14 @@
-<h1 align="center">RVR: One-step Generative Streaming Real-time Video Restoration</h1>
+<h1 align="center">SwiftVR: One-step Generative Streaming Real-time Video Restoration</h1>
 
-<p align="center"><img src="assets/teaser.avif" width="100%" alt="RVR teaser"></p>
+<p align="center"><img src="assets/teaser.avif" width="100%" alt="SwiftVR teaser"></p>
 
-> **RVR** is the first generative video restoration model to reach **real-time 1080p streaming on a consumer-grade GPU** (≈26 FPS on a single RTX 5090), sustains **31 FPS at QHD (2560×1440)** and **14 FPS at 4K (3840×2160)** on a single H100, and streams at resolutions where every compared diffusion-based VR baseline runs out of memory.
+> **SwiftVR** is the first generative video restoration model to reach **real-time 1080p streaming on a consumer-grade GPU** (≈26 FPS on a single RTX 5090), sustains **31 FPS at QHD (2560×1440)** and **14 FPS at 4K (3840×2160)** on a single H100, and streams at resolutions where every compared diffusion-based VR baseline runs out of memory.
 
 <p>
   <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?style=flat-square" alt="arXiv"></a>
-  <a href="https://github.com/H-oliday/RVR/"><img src="https://img.shields.io/badge/Project-Page-1f8acb.svg?style=flat-square" alt="Project Page"></a>
-  <a href="https://huggingface.co/H-oliday/RVR"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model-ffce00.svg?style=flat-square" alt="HuggingFace"></a>
-  <a href="https://github.com/H-oliday/RVR/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat-square" alt="License"></a>
+  <a href="https://github.com/H-oliday/SwiftVR/"><img src="https://img.shields.io/badge/Project-Page-1f8acb.svg?style=flat-square" alt="Project Page"></a>
+  <a href="https://huggingface.co/H-oliday/SwiftVR"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model-ffce00.svg?style=flat-square" alt="HuggingFace"></a>
+  <a href="https://github.com/H-oliday/SwiftVR/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat-square" alt="License"></a>
 </p>
 
 ## Updates
@@ -28,31 +28,31 @@
 
 Single H100, causal streaming, 24 frames.
 
-| Metric           | SeedVR2-3B (tile) | DOVE (tile) | FlashVSR-Tiny | **RVR (Ours)** |
+| Metric           | SeedVR2-3B (tile) | DOVE (tile) | FlashVSR-Tiny | **SwiftVR (Ours)** |
 | ---------------- | :---------------: | :---------: | :-----------: | :------------: |
 | Avg. Time (s) ↓  |       17.320      |    27.615   |     2.493     |    **0.766**   |
 | FPS ↑            |        1.39       |     0.85    |      9.61     |    **31.32**   |
 | Peak Mem. (GB) ↓ |       35.35       |    59.24    |     34.35     |    **38.01**   |
 
-> At **3840×2160**, every compared diffusion-based VR baseline **OOMs** on a single H100; RVR sustains **14 FPS**.
+> At **3840×2160**, every compared diffusion-based VR baseline **OOMs** on a single H100; SwiftVR sustains **14 FPS**.
 
 ### Qualitative comparison
 
-<img src="assets/qualitative.png" width="100%" alt="RVR qualitative comparison">
+<img src="assets/qualitative.png" width="100%" alt="SwiftVR qualitative comparison">
 
 ## 🛠 Installation
 
 ```bash
-git clone https://github.com/H-oliday/RVR.git
-cd RVR
+git clone https://github.com/H-oliday/SwiftVR.git
+cd SwiftVR
 
-conda create -n rvr python=3.10 -y
-conda activate rvr
+conda create -n swiftvr python=3.10 -y
+conda activate swiftvr
 
 # Install PyTorch matching your CUDA toolkit first, e.g. CUDA 12.4:
 pip install torch==2.10.0 torchvision==0.25.0 --index-url https://download.pytorch.org/whl/cu124
 
-# Install RVR (editable) and its dependencies:
+# Install SwiftVR (editable) and its dependencies:
 pip install -e .
 ```
 
@@ -69,10 +69,10 @@ pip install -e .
 
 | Model Name | Date    | Backbone       | Link                                                  |
 | ---------- | ------- | -------------- | ----------------------------------------------------- |
-| RVR        | 2026.06 | Wan2.2-TI2V-5B | [🤗 HuggingFace](https://huggingface.co/H-oliday/RVR) |
+| SwiftVR        | 2026.06 | Wan2.2-TI2V-5B | [🤗 HuggingFace](https://huggingface.co/H-oliday/SwiftVR) |
 
 ```bash
-huggingface-cli download H-oliday/RVR --local-dir checkpoints/
+huggingface-cli download H-oliday/SwiftVR --local-dir checkpoints/
 ```
 
 Expected checkpoint layout, where `checkpoints/` is the directory passed to `from_pretrained`:
@@ -91,9 +91,9 @@ checkpoints/
 ### Python API
 
 ```python
-from rvr import RVRPipeline
+from swiftvr import SwiftVRPipeline
 
-pipe = RVRPipeline.from_pretrained("checkpoints/").to("cuda", dtype="bfloat16")
+pipe = SwiftVRPipeline.from_pretrained("checkpoints/").to("cuda", dtype="bfloat16")
 
 pipe.restore_video("low_quality.mp4", "restored.mp4", upscale=4)
 ```
@@ -140,16 +140,16 @@ Use `--png` to write a PNG sequence.
 ## 📁 Repository Structure
 
 ```text
-RVR/
+SwiftVR/
 ├── README.md
 ├── LICENSE
 ├── requirements.txt
 ├── setup.py
 ├── scripts/
-│   └── inference.py              # CLI entry point, thin wrapper over RVRPipeline
-└── rvr/
-    ├── __init__.py               # exports RVRPipeline
-    ├── pipeline.py               # RVRPipeline: from_pretrained / to / restore_video / stream
+│   └── inference.py              # CLI entry point, thin wrapper over SwiftVRPipeline
+└── swiftvr/
+    ├── __init__.py               # exports SwiftVRPipeline
+    ├── pipeline.py               # SwiftVRPipeline: from_pretrained / to / restore_video / stream
     ├── runner.py                 # four-stage pipelined runner: reader → H2D → GPU → writer
     ├── io.py                     # frame reading, GPU preprocessing, mp4 / PNG writing
     ├── models/
@@ -163,15 +163,15 @@ RVR/
 
 ## 🙏 Acknowledgements
 
-RVR builds on [Wan2.2-TI2V-5B](https://github.com/Wan-Video), the lightweight autoencoder [TAEHV](https://github.com/madebyollin/taehv), and the [RealBasicVSR](https://github.com/ckkelvinchan/RealBasicVSR) degradation pipeline.
+SwiftVR builds on [Wan2.2-TI2V-5B](https://github.com/Wan-Video), the lightweight autoencoder [TAEHV](https://github.com/madebyollin/taehv), and the [RealBasicVSR](https://github.com/ckkelvinchan/RealBasicVSR) degradation pipeline.
 
-We thank the authors of [SeedVR2](https://github.com/ByteDance-Seed/SeedVR), [DOVE](https://github.com/zhengchen1999/DOVE), and [FlashVSR](https://github.com/OpenImagingLab/FlashVSR) for releasing strong baselines, and the [UltraVideo](https://github.com/Tele-AI/UltraVideo) team for the training corpus.
+We thank the authors of [SeedVR2](https://github.com/ByteDance-Seed/SeedVR), [DOVE](https://github.com/zhengchen1999/DOVE), and [FlashVSR](https://github.com/OpenImagingLab/FlashVSR) for releasing strong baselines, and the [UltraVideo](https://huggingface.co/datasets/APRIL-AIGC/UltraVideo) team for the training corpus.
 
 ## 📜 License
 
-RVR is released under the **Apache License 2.0**.
+SwiftVR is released under the **Apache License 2.0**.
 
-Copyright 2026 RVR Authors.
+Copyright 2026 SwiftVR Authors.
 
 Licensed under the Apache License, Version 2.0. You may obtain a copy of the License at:
 
@@ -188,5 +188,5 @@ If you have any questions, feel free to reach out:
 * Email: [kakibluee@gmail.com](mailto:kakibluee@gmail.com)
 
 <div align="center">
-<sub>If RVR is useful to your research or product, please consider giving it a ⭐.</sub>
+<sub>If SwiftVR is useful to your research or product, please consider giving it a ⭐.</sub>
 </div>

@@ -1,4 +1,4 @@
-# Core inference dependencies for RVR.
+# Core inference dependencies for SwiftVR.
 torch==2.10.0
 torchvision==0.25.0
 diffusers==0.36.0

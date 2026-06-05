@@ -17,12 +17,12 @@ def _read_requirements():
 
 
 setup(
-    name="rvr",
+    name="swiftvr",
     version="0.1.0",
     description="One-step generative streaming real-time video restoration.",
     long_description=_long_description,
     long_description_content_type="text/markdown",
-    packages=find_packages(include=["rvr", "rvr.*"]),
+    packages=find_packages(include=["swiftvr", "swiftvr.*"]),
     python_requires=">=3.10",
     install_requires=_read_requirements(),
     license="Apache-2.0",
