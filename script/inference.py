@@ -1,7 +1,7 @@
-"""Command-line entry point for RVR inference.
+"""Command-line entry point for SwiftVR inference.
 
-Thin wrapper around ``rvr.RVRPipeline``; all defaults live in
-``RVRPipeline.restore_video``.
+Thin wrapper around ``swiftvr.SwiftVRPipeline``; all defaults live in
+``SwiftVRPipeline.restore_video``.
 
     python scripts/inference.py \
         --input low_quality.mp4 --output restored.mp4 \
@@ -10,7 +10,7 @@ Thin wrapper around ``rvr.RVRPipeline``; all defaults live in
 
 import argparse
 
-from rvr import RVRPipeline
+from swiftvr import SwiftVRPipeline
 
 
 def _parse_resolution(value):
@@ -21,7 +21,7 @@ def _parse_resolution(value):
 
 
 def build_parser():
-    p = argparse.ArgumentParser(description="RVR streaming video restoration.")
+    p = argparse.ArgumentParser(description="SwiftVR streaming video restoration.")
 
     p.add_argument("--input", required=True, help="Low-quality video file or image folder.")
     p.add_argument("--output", required=True, help="Output mp4 path or directory.")
@@ -49,7 +49,7 @@ def build_parser():
 def main():
     args = build_parser().parse_args()
 
-    pipe = RVRPipeline.from_pretrained(args.checkpoint).to(
+    pipe = SwiftVRPipeline.from_pretrained(args.checkpoint).to(
         args.device, dtype=args.dtype,
         attention_backend=args.attention_backend,
         torch_compile=args.torch_compile)
