@@ -1,4 +1,4 @@
-<h1 align="center">SwiftVR: One-step Generative Streaming Real-time Video Restoration</h1>
+<h1 align="center">SwiftVR: Real-Time One-Step Generative Video Restoration</h1>
 
 <p align="center"><img src="assets/teaser.avif" width="100%" alt="SwiftVR teaser"></p>
 
@@ -28,11 +28,11 @@
 
 Single H100, causal streaming, 24 frames.
 
-| Metric           | SeedVR2-3B (tile) | DOVE (tile) | FlashVSR-Tiny | **SwiftVR (Ours)** |
-| ---------------- | :---------------: | :---------: | :-----------: | :------------: |
-| Avg. Time (s) ↓  |       17.320      |    27.615   |     2.493     |    **0.766**   |
-| FPS ↑            |        1.39       |     0.87    |      9.61     |    **31.32**   |
-| Peak Mem. (GB) ↓ |       35.35       |    59.24    |     34.35     |    **38.01**   |
+| Metric | DOVE (tile) | SeedVR2-3B (tile)| FlashVSR-Tiny | **SwiftVR (Ours)** |
+|---|:---:|:---:|:---:|:---:|
+| Avg. Time (s) ↓ | 27.615 | 17.320 | 2.493 | 0.766 |
+| FPS ↑ | 0.85 | 1.39 | 9.61 | 31.32 |
+| Peak Mem. (GB) ↓ | 59.24 | 35.35 | 34.35 | 38.01 |
 
 > At **3840×2160**, every compared diffusion-based VR baseline **OOMs** on a single H100; SwiftVR sustains **14 FPS**.
 
@@ -165,7 +165,7 @@ SwiftVR/
 
 SwiftVR builds on [Wan2.2-TI2V-5B](https://github.com/Wan-Video), the lightweight autoencoder [TAEHV](https://github.com/madebyollin/taehv), and the [RealBasicVSR](https://github.com/ckkelvinchan/RealBasicVSR) degradation pipeline.
 
-We thank the authors of [SeedVR2](https://github.com/ByteDance-Seed/SeedVR), [DOVE](https://github.com/zhengchen1999/DOVE), and [FlashVSR](https://github.com/OpenImagingLab/FlashVSR) for releasing strong baselines, and the [UltraVideo](https://huggingface.co/datasets/APRIL-AIGC/UltraVideo) team for the training corpus.
+We thank the authors of [DOVE](https://github.com/zhengchen1999/DOVE), [SeedVR2](https://github.com/ByteDance-Seed/SeedVR), and [FlashVSR](https://github.com/OpenImagingLab/FlashVSR) for releasing strong baselines, and the [UltraVideo](https://huggingface.co/datasets/APRIL-AIGC/UltraVideo) team for the training corpus.
 
 ## 📜 License
 
