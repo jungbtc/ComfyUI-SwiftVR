@@ -5,7 +5,7 @@
 > **SwiftVR** is the first generative video restoration model to reach **real-time 1080p streaming on a consumer-grade GPU** (≈26 FPS on a single RTX 5090), sustains **31 FPS at QHD (2560×1440)** and **14 FPS at 4K (3840×2160)** on a single H100, and streams at resolutions where every compared diffusion-based VR baseline runs out of memory.
 
 <p>
-  <a href="https://arxiv.org/abs/2606.09516"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg?style=flat-square" alt="arXiv"></a>
+  <a href="https://arxiv.org/abs/2606.09516"><img src="https://img.shields.io/badge/arXiv-2606.09516-b31b1b.svg?style=flat-square" alt="arXiv"></a>
   <a href="https://h-oliday.github.io/SwiftVR"><img src="https://img.shields.io/badge/Project-Page-1f8acb.svg?style=flat-square" alt="Project Page"></a>
   <a href="https://huggingface.co/H-oliday/SwiftVR"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Model-ffce00.svg?style=flat-square" alt="HuggingFace"></a>
   <a href="https://github.com/H-oliday/SwiftVR/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat-square" alt="License"></a>
