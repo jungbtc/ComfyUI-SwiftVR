@@ -1,4 +1,4 @@
-"""Input/output utilities for RVR: frame reading, GPU preprocessing and writing.
+"""Input/output utilities for SwiftVR: frame reading, GPU preprocessing and writing.
 
 Supports both video files (read with ``decord``) and image folders, and writes
 either an mp4 (libx265) or a PNG sequence.
