@@ -42,6 +42,11 @@ def build_parser():
 
     p.add_argument("--device", type=str, default="cuda")
     p.add_argument("--dtype", type=str, default="bfloat16", choices=["bfloat16", "float16", "float32"])
+    p.add_argument("--attention-backend", type=str, default="auto",
+                   choices=["auto", "sdpa", "flash_attn_3", "flash_attn_2", "sageattention", "xformers"],
+                   help="Attention backend used during SwiftVR preparation.")
+    p.add_argument("--torch-compile", action="store_true",
+                   help="Enable torch.compile for supported SwiftVR modules.")
     p.add_argument("--quiet", action="store_true")
     return p
 
