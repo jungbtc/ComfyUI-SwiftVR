@@ -148,6 +148,7 @@ Use `resolution` for an exact output size, or leave it empty and set `upscale`.
 
 - **Download errors:** confirm that ComfyUI has internet access and that `huggingface_hub` is installed from `requirements.txt`.
 - **Checkpoint missing:** set `checkpoint_dir` to `auto` to auto-download, or verify that `reae.safetensors`, `prompt_embedding.safetensors`, and `transformer/` exist under your custom `checkpoint_dir`. If an older workflow tries to load from your ComfyUI root folder, update the custom node, restart ComfyUI, and keep `checkpoint_dir` as `auto`.
+- **Checkpoint missing:** verify that `reae.safetensors`, `prompt_embedding.safetensors`, and `transformer/` exist under `checkpoint_dir`.
 - **Import errors:** install `requirements.txt` with the same Python executable that launches ComfyUI.
 - **Optional backend errors:** switch `attention_backend` to `auto` or `sdpa`.
 - **Out of memory:** lower `resolution`, reduce `clip_len`, close other GPU processes, or try `float16`/`bfloat16` on CUDA.
