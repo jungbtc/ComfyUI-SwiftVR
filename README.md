@@ -1,169 +1,169 @@
 # ComfyUI-SwiftVR
 
-ComfyUI-SwiftVR adds classic ComfyUI custom nodes for the included [`swiftvr`](./swiftvr) Python package. It provides nodes to load SwiftVR checkpoints, restore a video/image-folder path, restore a ComfyUI `IMAGE` batch, and clear the model cache.
+ComfyUI-SwiftVR adds ComfyUI nodes for SwiftVR video restoration. It loads the
+SwiftVR checkpoint, accepts ComfyUI's standard `VIDEO` input, restores/upscales
+the video, previews the result, writes a sidecar stats file, and clears the model
+cache after a run.
 
 ## Installation
 
-### Option 1: ComfyUI Manager (Recommended)
+Clone this repository into your own ComfyUI `custom_nodes` folder, then install
+the requirements with the same Python environment that runs ComfyUI.
 
-Use this option once the node is available in ComfyUI Manager / the ComfyUI Registry.
+### Windows
 
-1. Open **ComfyUI Manager** in your ComfyUI interface.
-2. Click **Custom Nodes Manager**.
-3. Search for **ComfyUI-SwiftVR**.
-4. Click **Install**.
-5. Restart ComfyUI.
+Open a terminal in your ComfyUI folder, then run:
 
-Registry Link: [ComfyUI Registry - ComfyUI-SwiftVR](https://registry.comfy.org/nodes/ComfyUI-SwiftVR)
-
-### Option 2: Manual Installation
-
-Clone the repository into your ComfyUI custom nodes directory:
-
-```bash
-cd ComfyUI
-git clone https://github.com/H-oliday/ComfyUI-SwiftVR.git custom_nodes/ComfyUI-SwiftVR
+```bat
+git clone https://github.com/jungbtc/ComfyUI-SwiftVR.git custom_nodes\ComfyUI-SwiftVR
+python -m pip install -r custom_nodes\ComfyUI-SwiftVR\requirements.txt
+python main.py
 ```
 
-Install dependencies using the standalone Python environment that runs ComfyUI.
+If ComfyUI runs from a conda environment, activate it first:
 
-**Windows:**
+```bat
+conda activate comfyui_2026_testbed
+```
+
+If ComfyUI runs from a local `.venv`, use that Python instead:
 
 ```bat
 .venv\Scripts\python.exe -m pip install -r custom_nodes\ComfyUI-SwiftVR\requirements.txt
 ```
 
-**Linux/macOS:**
+### Linux/macOS
+
+Open a terminal in your ComfyUI folder, then run:
 
 ```bash
-.venv/bin/python -m pip install -r custom_nodes/ComfyUI-SwiftVR/requirements.txt
+git clone https://github.com/jungbtc/ComfyUI-SwiftVR.git custom_nodes/ComfyUI-SwiftVR
+python -m pip install -r custom_nodes/ComfyUI-SwiftVR/requirements.txt
+python main.py
 ```
 
-Restart ComfyUI after installation.
+Restart ComfyUI after installing the node.
 
-> Optional acceleration backends such as `flash_attn_3`, `flash_attn_2`, `sageattention`, and `xformers` are not installed automatically. Install them separately only if they match your CUDA, PyTorch, and platform versions.
+Optional acceleration backends such as `flash_attn_3`, `flash_attn_2`,
+`sageattention`, and `xformers` are not installed automatically. Install them
+separately only if they match your CUDA, PyTorch, and platform versions.
 
-## Model Installation
+## Model Setup
 
-SwiftVR checkpoints are loaded from the path you enter in the **SwiftVR Model Loader** node. They do not have to be placed in a specific ComfyUI model folder.
-
-Recommended location:
+The **SwiftVR Model Loader** node can use `checkpoint_dir=auto`. In that mode it
+looks for the model in:
 
 ```text
 ComfyUI/models/SwiftVR/
+```
+
+Expected layout:
+
+```text
+models/SwiftVR/
   reae.safetensors
   prompt_embedding.safetensors
   transformer/
     ...
 ```
 
-You can also store the checkpoint anywhere else and paste that folder path into `checkpoint_dir`.
+If the folder is missing, the loader can download the official model from
+`H-oliday/SwiftVR` using `huggingface_hub`.
 
-Download the official SwiftVR model from:
-
-- [H-oliday/SwiftVR on Hugging Face](https://huggingface.co/H-oliday/SwiftVR)
-
-Example download with the Hugging Face CLI:
+You can also download it manually:
 
 ```bash
 huggingface-cli download H-oliday/SwiftVR --local-dir models/SwiftVR
 ```
 
-If you run that command from the `ComfyUI` directory, use this loader path:
-
-```text
-models/SwiftVR
-```
-
-## Expected Checkpoint Layout
-
-The default loader inputs expect this structure:
-
-```text
-checkpoints/
-  reae.safetensors
-  prompt_embedding.safetensors
-  transformer/
-    ...
-```
-
-If your files use different names, change these inputs on **SwiftVR Model Loader**:
-
-- `reae_filename`
-- `prompt_embedding_filename`
-- `transformer_subfolder`
-
 ## Nodes
 
 ### SwiftVR Model Loader
 
-Loads a SwiftVR checkpoint and outputs a reusable `SWIFTVR_PIPE` object. Loaded pipelines are cached by checkpoint path, device, dtype, attention backend, compile setting, upscale mode, and checkpoint filenames.
+Loads the SwiftVR checkpoint and outputs a `SWIFTVR_PIPE`.
 
-Main inputs:
+Important inputs:
 
-- `checkpoint_dir`: path to the SwiftVR checkpoint directory.
-- `device`: `cuda` or `cpu`.
-- `dtype`: `bfloat16`, `float16`, or `float32`.
-- `attention_backend`: `auto`, `sdpa`, `flash_attn_3`, `flash_attn_2`, `sageattention`, or `xformers`.
-- `torch_compile`: enable only after confirming your environment supports it.
+- `checkpoint_dir`: use `auto` for `ComfyUI/models/SwiftVR`, or enter a custom path.
+- `device`: usually `cuda`.
+- `dtype`: usually `bfloat16` or `float16` on CUDA.
+- `attention_backend`: use `auto` or `sdpa` unless you installed another backend.
+- `torch_compile`: leave off for first runs.
+- `upscale_mode`: interpolation used before SwiftVR restoration.
 
-### SwiftVR Restore Video Path
+### Load Video
 
-Restores a video file or image-folder path and writes the result to disk.
+Use ComfyUI's built-in **Load Video** node from **Basics**. It previews the chosen
+video and outputs the standard `VIDEO` type.
 
-- `resolution`: leave empty for upscale mode, or enter a value such as `1920x1080` or `3840x2160`.
-- `fps`: set to `0` to keep the source fps.
-- `png_save`: write PNG frames instead of only a video output.
-- Outputs: `output_path` and formatted `stats_json`.
+Connect its `VIDEO` output directly into **SwiftVR Restore Video**.
 
-### SwiftVR Restore Image Batch
+### SwiftVR Advanced Options
 
-Restores a ComfyUI `IMAGE` batch by writing temporary PNG frames, running SwiftVR, and reading the restored PNG frames back into ComfyUI.
+Optional settings for runtime, upscale, and encoding.
 
-- Input tensor format is the normal ComfyUI image format: `[B,H,W,C]`, float `0..1`.
-- `keep_temp=false` removes temporary folders after loading frames back into ComfyUI.
-- `keep_temp=true` leaves temporary files on disk for debugging.
-- The node returns all PNG frames produced by SwiftVR.
+- `upscale`: output scale from `2` to `4`.
+- `clip_len`: temporal chunk size; must be a multiple of 4.
+- `dit_overlap`: temporal overlap for DiT blending. `0` is the default.
+- `fps`: `0` keeps the source FPS.
+- `quality`: x265 output quality, 0-100.
+- `save_format`: use `yuv444p` only when you specifically need 4:4:4 output.
+- `ffmpeg_preset`: optional x265 preset such as `fast` or `medium`.
+- `queue_size`: lower this if VRAM is tight.
+- `clear_cache_after`: enabled by default to release SwiftVR from VRAM after a run.
+
+### SwiftVR Restore Video
+
+Restores the linked `VIDEO` and writes an MP4.
+
+Inputs:
+
+- `swiftvr_pipe`: connect from **SwiftVR Model Loader**.
+- `video`: connect from ComfyUI **Load Video**.
+- `options`: optional connection from **SwiftVR Advanced Options**.
+- `output_dir`: output folder, relative to the ComfyUI root unless absolute.
+- `filename`: output MP4 filename.
+
+Behavior:
+
+- Runs SwiftVR video restoration/upscale.
+- Always writes MP4 output.
+- Automatically writes a stats JSON next to the MP4.
+- Shows the restored video preview inside the node UI when ComfyUI can serve the file.
+- Clears the SwiftVR model cache after completion when `clear_cache_after` is enabled.
+- Does not expose `output_path` or `stats_json` sockets.
+
+### Legacy Nodes
+
+Legacy nodes are kept only for older workflows:
+
+- **SwiftVR Restore Video Path**
+- **SwiftVR Restore Image Batch**
+
+Prefer **Load Video** plus **SwiftVR Restore Video** for new workflows.
 
 ### SwiftVR Clear Cache
 
-Clears the global SwiftVR pipeline cache, runs Python garbage collection, and empties the CUDA cache when available.
+Manually clears cached SwiftVR pipelines, runs Python garbage collection, and
+empties the CUDA cache when available.
 
-## Example Workflows
+## Local Testbed Background
 
-### Video or image-folder restoration
+This Windows setup was used while building and smoke-testing the node:
 
-```text
-SwiftVR Model Loader -> SwiftVR Restore Video Path
-```
+- GPU: NVIDIA GeForce RTX 4090
+- NVIDIA driver: 591.86
+- VRAM: 24564 MiB, about 24 GB
+- System RAM: 63.83 GiB, about 64 GB
+- Python: 3.11.15 in the `comfyui_2026_testbed` conda environment
+- PyTorch: 2.12.0+cu130
+- CUDA runtime reported by PyTorch: 13.0
 
-1. Set `checkpoint_dir` in **SwiftVR Model Loader**.
-2. Connect `swiftvr_pipe` to **SwiftVR Restore Video Path**.
-3. Set `input_path` to a video file or image folder.
-4. Set `output_path` to an `.mp4` file path or an output folder.
-5. Queue the workflow.
+## Notes
 
-### ComfyUI image-batch restoration
-
-```text
-Load Image / video frames -> SwiftVR Restore Image Batch
-SwiftVR Model Loader -----> SwiftVR Restore Image Batch
-```
-
-Use `resolution` for an exact output size, or leave it empty and set `upscale`.
-
-## Known Limitations
-
-- SwiftVR is very VRAM-heavy at 1080p and especially at 4K.
+- SwiftVR is VRAM-heavy, especially at 4K output.
 - `clip_len` must be a multiple of 4.
 - Output frame counts may follow SwiftVR's internal `4k+1` chunk handling.
-- Optional attention backends require separate installation.
-- x265/MP4 writing requires ffmpeg support; `imageio-ffmpeg` usually provides a bundled ffmpeg binary.
-- CPU execution is useful for testing wiring but is expected to be very slow.
-
-## Troubleshooting
-
-- **Checkpoint missing:** verify that `reae.safetensors`, `prompt_embedding.safetensors`, and `transformer/` exist under `checkpoint_dir`.
-- **Import errors:** install `requirements.txt` with the same Python executable that launches ComfyUI.
-- **Optional backend errors:** switch `attention_backend` to `auto` or `sdpa`.
-- **Out of memory:** lower `resolution`, reduce `clip_len`, close other GPU processes, or try `float16`/`bfloat16` on CUDA.
+- x265/MP4 writing requires ffmpeg support; `imageio-ffmpeg` usually provides it.
+- CPU execution is useful for wiring tests but is expected to be very slow.
+- I really vibe coded to work on my ComfyUI. Will use as many as token possible to fix your error, but don't expect too much. 

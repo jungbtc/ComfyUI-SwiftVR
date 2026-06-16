@@ -6,6 +6,7 @@ diffusers
 transformers
 accelerate
 safetensors
+huggingface_hub
 decord
 imageio
 imageio-ffmpeg

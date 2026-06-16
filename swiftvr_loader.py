@@ -8,10 +8,69 @@ from pathlib import Path
 from typing import Any
 
 _PIPELINE_CACHE: dict[tuple[str, str, str, str, bool, str, str, str, str], Any] = {}
+_HF_REPO_ID = "H-oliday/SwiftVR"
 
 
 def _repo_root() -> Path:
     return Path(__file__).resolve().parent
+
+
+def _comfy_root() -> Path | None:
+    """Return the ComfyUI root when the custom node lives under custom_nodes."""
+    root = _repo_root()
+    if root.parent.name == "custom_nodes":
+        return root.parent.parent
+    return None
+
+
+def _default_checkpoint_dir() -> Path:
+    try:
+        import folder_paths  # pylint: disable=import-outside-toplevel
+
+        models_dir = Path(folder_paths.models_dir)
+    except Exception:
+        comfy_root = _comfy_root()
+        models_dir = (comfy_root / "models") if comfy_root else (_repo_root() / "models")
+    return models_dir / "SwiftVR"
+
+
+def _is_comfy_root(path: Path) -> bool:
+    return (path / "main.py").is_file() and (path / "custom_nodes").is_dir()
+
+
+def _resolve_checkpoint_dir(checkpoint_dir: str) -> Path:
+    text = (checkpoint_dir or "").strip()
+    if not text or text.lower() == "auto":
+        return _default_checkpoint_dir().expanduser().resolve()
+
+    root = Path(text).expanduser().resolve()
+    if _is_comfy_root(root):
+        return _default_checkpoint_dir().expanduser().resolve()
+    return root
+
+
+def _download_checkpoint(root: Path) -> None:
+    try:
+        from huggingface_hub import snapshot_download  # pylint: disable=import-outside-toplevel
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(
+            "SwiftVR checkpoint was not found and huggingface_hub is unavailable, "
+            "so it cannot be downloaded automatically. Install huggingface_hub or "
+            f"download {_HF_REPO_ID} into {root}."
+        ) from exc
+
+    root.mkdir(parents=True, exist_ok=True)
+    try:
+        snapshot_download(
+            repo_id=_HF_REPO_ID,
+            local_dir=str(root),
+            local_dir_use_symlinks=False,
+            resume_download=True,
+        )
+    except Exception as exc:  # noqa: BLE001
+        raise RuntimeError(
+            f"Failed to auto-download SwiftVR checkpoint from {_HF_REPO_ID} to {root}: {exc}"
+        ) from exc
 
 
 def _import_pipeline():
@@ -37,9 +96,9 @@ def validate_checkpoint(
     prompt_embedding_filename: str,
 ) -> Path:
     """Validate the expected SwiftVR checkpoint layout and return the root path."""
-    root = Path(checkpoint_dir).expanduser().resolve()
+    root = _resolve_checkpoint_dir(checkpoint_dir)
     if not root.exists():
-        raise RuntimeError(f"SwiftVR checkpoint directory does not exist: {root}")
+        _download_checkpoint(root)
     if not root.is_dir():
         raise RuntimeError(f"SwiftVR checkpoint path is not a directory: {root}")
 
@@ -47,6 +106,14 @@ def validate_checkpoint(
     for rel in (reae_filename, prompt_embedding_filename, transformer_subfolder):
         if not (root / rel).exists():
             missing.append(str(root / rel))
+    if missing:
+        if root == _default_checkpoint_dir().expanduser().resolve():
+            _download_checkpoint(root)
+            missing = [
+                str(root / rel)
+                for rel in (reae_filename, prompt_embedding_filename, transformer_subfolder)
+                if not (root / rel).exists()
+            ]
     if missing:
         raise RuntimeError(
             "SwiftVR checkpoint is incomplete. Missing required path(s):\n- "

@@ -1,0 +1,212 @@
+{
+  "id": "d5d4f478-1729-44c7-87c7-9b52401cdf4d",
+  "revision": 0,
+  "last_node_id": 4,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "SwiftVRModelLoader",
+      "pos": [
+        80,
+        120
+      ],
+      "size": [
+        360,
+        292
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "swiftvr_pipe",
+          "type": "SWIFTVR_PIPE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "jungbtc/ComfyUI-SwiftVR",
+        "ver": "58c488e2d8d0ef55f87b1ff4eac1de07b665f954",
+        "Node name for S&R": "SwiftVRModelLoader"
+      },
+      "widgets_values": [
+        "auto",
+        "cuda",
+        "bfloat16",
+        "auto",
+        false,
+        "bilinear",
+        "reae.safetensors",
+        "transformer",
+        "prompt_embedding.safetensors"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "LoadVideo",
+      "pos": [
+        80,
+        470
+      ],
+      "size": [
+        360,
+        84
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.24.0",
+        "Node name for S&R": "LoadVideo"
+      },
+      "widgets_values": [
+        "test.mp4",
+        "image"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "SwiftVRAdvancedOptions",
+      "pos": [
+        506.6666666666667,
+        375.55555555555554
+      ],
+      "size": [
+        360,
+        388
+      ],
+      "flags": {
+        "collapsed": false
+      },
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "options",
+          "type": "SWIFTVR_OPTIONS",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "jungbtc/ComfyUI-SwiftVR",
+        "ver": "58c488e2d8d0ef55f87b1ff4eac1de07b665f954",
+        "Node name for S&R": "SwiftVRAdvancedOptions"
+      },
+      "widgets_values": [
+        2,
+        16,
+        0,
+        0,
+        85,
+        "",
+        "",
+        2,
+        true,
+        true
+      ]
+    },
+    {
+      "id": 4,
+      "type": "SwiftVRRestoreVideo",
+      "pos": [
+        500,
+        120
+      ],
+      "size": [
+        420,
+        192
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "swiftvr_pipe",
+          "type": "SWIFTVR_PIPE",
+          "link": 1
+        },
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 2
+        },
+        {
+          "name": "options",
+          "shape": 7,
+          "type": "SWIFTVR_OPTIONS",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "aux_id": "jungbtc/ComfyUI-SwiftVR",
+        "ver": "58c488e2d8d0ef55f87b1ff4eac1de07b665f954",
+        "Node name for S&R": "SwiftVRRestoreVideo"
+      },
+      "widgets_values": [
+        "output/swiftvr",
+        "test_swiftvr.mp4"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      4,
+      0,
+      "SWIFTVR_PIPE"
+    ],
+    [
+      2,
+      2,
+      0,
+      4,
+      1,
+      "VIDEO"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      2,
+      "SWIFTVR_OPTIONS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.9,
+      "offset": [
+        60,
+        60
+      ]
+    },
+    "frontendVersion": "1.45.15"
+  },
+  "version": 0.4
+}
