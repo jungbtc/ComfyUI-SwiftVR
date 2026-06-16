@@ -1,5 +1,7 @@
 # ComfyUI-SwiftVR
 
+<img width="874" height="687" alt="Screenshot 2026-06-16 at 3 59 31 PM" src="https://github.com/user-attachments/assets/2d7318d7-c6ce-4ad6-85f2-2421acbd859a" />
+
 ComfyUI-SwiftVR adds ComfyUI nodes for SwiftVR video restoration. It loads the
 SwiftVR checkpoint, accepts ComfyUI's standard `VIDEO` input, restores/upscales
 the video, previews the result, writes a sidecar stats file, and clears the model
