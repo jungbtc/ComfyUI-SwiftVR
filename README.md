@@ -168,4 +168,4 @@ This Windows setup was used while building and smoke-testing the node:
 - Output frame counts may follow SwiftVR's internal `4k+1` chunk handling.
 - x265/MP4 writing requires ffmpeg support; `imageio-ffmpeg` usually provides it.
 - CPU execution is useful for wiring tests but is expected to be very slow.
-- I really vibe coded to work on my ComfyUI. Will use as many as token possible to fix your error, but don't expect too much. 
+- I basically vibe-coded this to work in my own ComfyUI setup. I’ll spend as many tokens as needed trying to fix your error, but don’t expect too much.
